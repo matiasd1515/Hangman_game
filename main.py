@@ -24,16 +24,19 @@ palabra = elegirPalabra()
 #para ganar esta variable tiene que ser identica a "palabra"
 palabraFinal = ""
 
-# numero de intentos realizados no se permite mas de 6
-intentos = 0 
-
 # genera una lista de elementos iguales con la misma cantidad de elementos 
 # que la variable "palabra"
 # posteriormente un elemento es reemplazado si el caracter es correcto
-correcto = [0]*len(palabra) 
+correcto = [" _ "]*len(palabra) 
 
 # una lista con los caracteres incorrectos
 incorrecto = [] 
+
+#aqui es donde se va a guardar lo que escriva el jugador
+jugador = ""
+
+# numero de intentos realizados no se permite mas de 6
+intentos = 0
 
 def clear():
     """
@@ -99,6 +102,18 @@ def dibujarIntento(intento):
     |        / \\
 """)
 
+def imprimirProgreso(var1=correcto, var2=incorrecto):
+    """
+    imprime por pantalla el progreso de la partida
+    """
+    convertirCorrecto = "".join(map(str,correcto))
+    convertirIorrecto = "".join(map(str,incorrecto))
+
+    dibujarIntento(intentos)
+
+    print(f"Incorrecto: {convertirIorrecto}")
+    print(f"Correcto: {convertirCorrecto}")
+
 clear()
 
 while True:
@@ -109,29 +124,33 @@ while True:
     if intentos == 6:
        clear()
        print("F I N  D E L  J U E G O")
-       dibujarIntento(intentos)
-       print("palabra: ",palabra)
-       print("incorrecto: ",incorrecto)
-       print("correcto: ",correcto)
+       imprimirProgreso()
+       print("Palabra: ",palabra)
        break
+    
     elif palabraFinal == palabra:
        clear()
        print("F E L I Z I D A D E S  G A N A S T E")
-       dibujarIntento(intentos)
-       print("palabra: ",palabra)
-       print("incorrecto: ",incorrecto)
-       print("correcto: ",correcto)
+       imprimirProgreso()
+       print("Palabra: ",palabra)
        break
 
-    dibujarIntento(intentos)
+    elif intentos != 6:
+        print("H a n g m a n  G a m e")
 
-    print("incorrecto: ",incorrecto)
-    print("correcto: ",correcto)
-    jugador = input("> ")
+    imprimirProgreso()
+    try:
+        jugador = str(input("Escriva una letra: ")).upper()
+    except KeyboardInterrupt:
+        clear()
+        break
     
     clear()
 
-    if jugador in palabra:
+    if len(jugador) > 1:
+        continue
+    
+    elif jugador in palabra:
         if jugador in correcto:
             try:
                 # buscar "jugador" en "palabra" desde el ultimo elemento encontrado en "palabra" 
@@ -144,7 +163,8 @@ while True:
         
         # buscar "jugador" en "palabrar" desde el primer elemento de "palabra" 
         # y sobreescribe "correcto" con el valor "jugador" con el mismo indice en el que se encontro "jugador".
-        correcto[palabra.index(jugador,0)] = jugador       
+        correcto[palabra.index(jugador,0)] = jugador
+
     elif not jugador in palabra:
         incorrecto.append(jugador)
         intentos += 1
